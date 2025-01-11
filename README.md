@@ -31,7 +31,7 @@ The first statement is important and makes it so that we don't add our dist fold
 
 2\. `NO_BABEL_NODE=true` as an environment variable. For some reason, vscode debugging does not work with the babel node command that is being run in the normal javascript template. Since everything has already been babelified when this command is run, I don't believe this is necessary though. So this environment variable makes the javascript template run a normal node command.
 
-As always, don't forget to mount your sources and config and to expose the debug port.
+Don't forget to mount your sources and config, expose the debug port and run in `NODE_END=development` as usual.
 
 ## Installing node_modules and keep a merged package-lock.json
 
