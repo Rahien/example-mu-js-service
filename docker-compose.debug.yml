@@ -1,0 +1,14 @@
+services:
+  example:
+    image: example-ts-service
+    environment:
+      - NODE_ENV=development
+      - NO_BABEL_NODE=true
+    ports:
+      - 8080:80
+      - 9229:9229
+    volumes:
+      - ./:/app
+      - ./config:/config
+      - /app/dist
+      - ./dist:/usr/src/dist/
