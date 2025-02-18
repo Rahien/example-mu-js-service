@@ -10,5 +10,3 @@ services:
     volumes:
       - ./:/app
       - ./config:/config
-      - /app/dist
-      - ./dist:/usr/src/dist/

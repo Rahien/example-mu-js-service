@@ -7,7 +7,7 @@
       "name": "Attach to Remote",
       "address": "localhost",
       "port": 9229,
-      "localRoot": "${workspaceFolder}/dist",
+      "localRoot": "${workspaceFolder}",
       "remoteRoot": "/usr/src/dist",
       "restart": true,
       "trace": true,

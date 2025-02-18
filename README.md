@@ -7,37 +7,40 @@ This is an example set up of how to use the javascript template ([rewired versio
 - proper typescript support for the mu package
 - unit tests
 
-And the things that the mu-javascript-template normally offers.
-
-> [!IMPORTANT]
-> Currently there is no feature branch in the javascript template with the rewired approach. You will have to build it yourself and call it e.g. local-js-template.
+And the things that the mu-javascript-template already offered before
 
 ## Typescript debugging
 
-The `.vscode/launch.json` file contains all you need to connect your vscode debugger to the node instance that is running in the container. There are a couple of particularities however.
+The `.vscode/launch.json` file contains all you need to connect your vscode debugger to the node instance that is running in the container. It should already be pre-configured for you. For your breakpoints to work, vscode needs to be able to map your built sources to the ones in the container. This is done using `sourceMapPathOverrides`:
 
-1\. For your breakpoints to work, vscode needs to be able to map your built sources to the ones in the container. Therefore, we need to mount a dist directory that the template can write its built files to. This is done by the following volumes statements (see `docker-compose.debug.yml`):
+```json
+{
+  // [...]
+  "sourceMapPathOverrides": {
+    "file:///usr/src/build/*": "${workspaceFolder}/*",
+    "../build/*": "${workspaceFolder}/*",
+    "../../build/*": "${workspaceFolder}/*",
+    "../../../build/*": "${workspaceFolder}/*"
+  }
+  // [...]
+}
+```
+
+I'm not smart enough to figure out how to make it understand regexes, so you'll have to repeat the override for every level of nesting in your app.
+
+Your volumes remain unchanged: mount your sources and config correctly. Expose the debug port and run in `NODE_END=development` as usual.
 
 ```yaml
 volumes:
-  - /app/dist
-  - ./dist:/usr/src/dist/
-  # [...don't forget  to also add your sources and config of course]
   - ./:/app
   - ./config:/config
 ```
-
-The first statement is important and makes it so that we don't add our dist folder to the `/app` directory again, creating an infinite loop. This was done so that we could keep the default mu-javascript-template setup of putting source files directly in the root of the service instead of in its own `src` folder, like is usually done in e.g. the react world.
-
-2\. `NO_BABEL_NODE=true` as an environment variable. For some reason, vscode debugging does not work with the babel node command that is being run in the normal javascript template. Since everything has already been babelified when this command is run, I don't believe this is necessary though. So this environment variable makes the javascript template run a normal node command.
-
-Don't forget to mount your sources and config, expose the debug port and run in `NODE_END=development` as usual.
 
 ## Installing node_modules and keep a merged package-lock.json
 
 The javascript template installs a couple of dependencies of its own and includes the mu package that is not published on npm. This version of the javascript template keeps a package-lock.json file that you can include in the git repo of your service. The contents of this package-lock.json file is the combination of the template packages and the service packages (template package have priority, like in the regular js tempate).
 
-You can install this by running `mu script install` (though this command is subject to change)
+You can install this by running `mu script setup-ide` (though this command is undocumented and subject to change)
 
 ## Typescript support for mu package
 
